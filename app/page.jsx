@@ -130,12 +130,24 @@ export default function StareonProDashboard() {
                             <p className="tab-desc">Member dapat poin dari chat dan Voice Channel.</p>
                             <div className="toggle-box"><span>XP Text Chat</span><input type="checkbox" defaultChecked style={{width:'20px',height:'20px'}}/></div>
                             <div className="toggle-box" style={{marginTop:'10px'}}><span>XP Voice Channel</span><input type="checkbox" defaultChecked style={{width:'20px',height:'20px'}}/></div>
+                            
+                            <label className="input-label" style={{marginTop:'15px'}}>Maksimal Level</label>
+                            <input type="number" className="modern-input" placeholder="Maks: 100" max="100" />
+                            
+                            <hr style={{borderColor:'#1e293b', margin:'20px 0'}}/>
+                            
+                            <h3 style={{fontSize: '1rem', color: '#38bdf8', marginBottom: '15px'}}>Role Reward (Otomatis)</h3>
+                            <label className="input-label">Target Level</label>
+                            <input type="number" className="modern-input" placeholder="Misal: 10" />
+                            <label className="input-label" style={{marginTop:'15px'}}>ID Role Reward</label>
+                            <input type="text" className="modern-input" placeholder="Masukkan ID Role Discord..." />
                         </div>
                     )}
                     {activeTab === 'announce' && (
                         <div>
                             <h2 className="tab-title"><Megaphone size={20}/> Kirim Announcement</h2>
                             <label className="input-label">ID Channel Tujuan</label><input type="text" className="modern-input" placeholder="ID Channel Discord..." />
+                            <label className="input-label" style={{marginTop:'15px'}}>Ping Role (Opsional)</label><input type="text" className="modern-input" placeholder="Ketik @everyone atau ID Role..." />
                             <label className="input-label" style={{marginTop:'15px'}}>Isi Pengumuman</label><textarea className="modern-input" rows="4" placeholder="Ketik di sini..." />
                             <button className="btn-action-pro" style={{background:'#10b981'}}>KIRIM SEKARANG</button>
                         </div>
