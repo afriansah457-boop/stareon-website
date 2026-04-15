@@ -78,9 +78,7 @@ export default function StareonProDashboard() {
                         {guilds.length === 0 && <p style={{color: '#94a3b8'}}>Kamu belum menjadi Admin di server manapun.</p>}
                         {guilds.map(srv => {
                             // LOGIKA SAKTI: Cek Bot Join (Sementara diset false agar kamu bisa lihat tombol invite untuk ngetes)
-                            // Nanti kalau API bot sudah jalan, variabel ini akan mengecek database otomatis.
                             const isBotJoined = false; 
-
                             const inviteLink = `https://discord.com/api/oauth2/authorize?client_id=${process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || '1493195682834681937'}&permissions=8&scope=bot%20applications.commands`;
                             
                             return (
@@ -93,12 +91,9 @@ export default function StareonProDashboard() {
                                         <p style={{ margin: 0, fontSize: '0.8rem', color: '#94a3b8' }}>{srv.owner ? '👑 Owner' : '🛡️ Admin'}</p>
                                     </div>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                        {/* Manage sengaja dimunculkan terus untuk kebutuhan test UI dashboard */}
                                         <button onClick={() => setSelectedServer(srv)} className="btn-manage">Manage</button>
-                                        
-                                        {/* Invite hanya muncul jika bot belum join */}
                                         {!isBotJoined && (
-                                            <a href={inviteLink} target="_blank" className="btn-invite"><PlusCircle size={14} style={{marginRight: '5px'}}/> Invite Bot</a>
+                                            <a href={inviteLink} target="_blank" rel="noreferrer" className="btn-invite"><PlusCircle size={14} style={{marginRight: '5px'}}/> Invite Bot</a>
                                         )}
                                     </div>
                                 </div>
@@ -132,7 +127,7 @@ export default function StareonProDashboard() {
                 <div className="nav-list">
                     <div className={`nav-item ${activeTab === 'welcome' ? 'active' : ''}`} onClick={() => setActiveTab('welcome')}><MessageSquare size={18} style={{marginRight: '10px'}}/> Welcome & Goodbye</div>
                     <div className={`nav-item ${activeTab === 'antilink' ? 'active' : ''}`} onClick={() => setActiveTab('antilink')}><Shield size={18} style={{marginRight: '10px'}}/> Anti-Link System</div>
-                    <div className={`nav-item ${activeTab === 'leveling' ? 'active' : ''}`} onClick={() => setActiveTab('leveling')}><Zap size={18} style={{marginRight: '10px'}}/> Leveling (Credix Lite)</div>
+                    <div className={`nav-item ${activeTab === 'leveling' ? 'active' : ''}`} onClick={() => setActiveTab('leveling')}><Zap size={18} style={{marginRight: '10px'}}/> Leveling (Credix)</div>
                     <div className={`nav-item ${activeTab === 'announce' ? 'active' : ''}`} onClick={() => setActiveTab('announce')}><Megaphone size={18} style={{marginRight: '10px'}}/> Announcement</div>
                     <div className={`nav-item ${activeTab === 'ticket' ? 'active' : ''}`} onClick={() => setActiveTab('ticket')}><Ticket size={18} style={{marginRight: '10px'}}/> Ticket Setup</div>
                 </div>
@@ -140,7 +135,7 @@ export default function StareonProDashboard() {
 
             <div className="content-area">
                 <div className="glass-card">
-                    {/* MENU 1: WELCOME & GOODBYE (DIPERBARUI) */}
+                    {/* MENU 1: WELCOME & GOODBYE */}
                     {activeTab === 'welcome' && (
                         <div>
                             <h2 className="tab-title"><MessageSquare size={20}/> Welcome & Goodbye</h2>
@@ -173,7 +168,7 @@ export default function StareonProDashboard() {
                         </div>
                     )}
 
-                    {/* MENU 3: LEVELING (CREDIX LITE) */}
+                    {/* MENU 3: LEVELING */}
                     {activeTab === 'leveling' && (
                         <div>
                             <h2 className="tab-title"><Zap size={20}/> Leveling (Credix Lite)</h2>
@@ -225,7 +220,7 @@ export default function StareonProDashboard() {
                             <div className="toggle-box" style={{marginTop: '10px'}}>
                                 <div>
                                     <span style={{display: 'block'}}>Munculkan Formulir (Modal)?</span>
-                                    <span style={{fontSize: '0.75rem', color: '#94a3b8', fontWeight: 'normal'}}>Member wajib mengisi form alasan sebelum tiket terbuka</span>
+                                    <span style={{fontSize: '0.75rem', color: '#94a3b8', fontWeight: 'normal'}}>Member wajib mengisi form sebelum tiket terbuka</span>
                                 </div>
                                 <input type="checkbox" defaultChecked style={{width: '20px', height: '20px'}}/>
                             </div>
@@ -264,4 +259,9 @@ export default function StareonProDashboard() {
                 
                 .btn-save-pro { width: 100%; background: #38bdf8; color: #020617; border: none; padding: 16px; border-radius: 12px; font-weight: 900; margin-top: 25px; cursor: pointer; transition: 0.2s; }
                 .btn-save-pro:active { transform: scale(0.98); background: #7dd3fc; }
-                .btn-action-pro { width: 100%; color: white; border: none; p
+                .btn-action-pro { width: 100%; color: white; border: none; padding: 16px; border-radius: 12px; font-weight: 900; margin-top: 25px; cursor: pointer; transition: 0.2s; }
+                .btn-action-pro:active { transform: scale(0.98); opacity: 0.8; }
+                
+                @media (min-width: 768px) {
+                    .full-screen { flex-direction: row; }
+                    .sidebar { width: 280px; height: 100vh; border-bo
