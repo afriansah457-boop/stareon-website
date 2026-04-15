@@ -182,15 +182,37 @@ export default function StareonProDashboard() {
                         </div>
                     )}
 
-                    {/* MENU 5: TICKET SETUP */}
+                    {/* MENU 5: TICKET SETUP (SUDAH DIROMBAK TOTAL!) */}
                     {activeTab === 'ticket' && (
                         <div>
-                            <h2 className="tab-title"><Ticket size={20}/> Ticket System Setup</h2>
-                            <p className="tab-desc">Kirim pesan interaktif pembuatan tiket. Saat tiket dibuat, otomatis tag role tertentu.</p>
-                            <label className="input-label">Pesan Panel Tiket</label>
-                            <textarea className="modern-input" rows="2" placeholder="Klik tombol di bawah untuk membuat tiket bantuan!" />
+                            <h2 className="tab-title"><Ticket size={20}/> Advanced Ticket System</h2>
+                            <p className="tab-desc">Kirim panel tiket canggih (dengan Dropdown & Formulir) ke channel pilihanmu.</p>
+                            
+                            <label className="input-label">ID Channel (Tempat Panel Tiket Dikirim)</label>
+                            <input type="text" className="modern-input" placeholder="Masukkan ID Channel (misal: 123456789...)" />
+                            
+                            <label className="input-label" style={{marginTop: '15px'}}>Pesan Panel Tiket</label>
+                            <textarea className="modern-input" rows="2" placeholder="Pilih kategori bantuan di bawah ini!" />
+                            
+                            <div className="toggle-box" style={{marginTop: '15px'}}>
+                                <div>
+                                    <span style={{display: 'block'}}>Gunakan Dropdown Kategori?</span>
+                                    <span style={{fontSize: '0.75rem', color: '#94a3b8', fontWeight: 'normal'}}>Member bisa memilih (Support, Report, Bantuan Umum)</span>
+                                </div>
+                                <input type="checkbox" defaultChecked style={{width: '20px', height: '20px'}}/>
+                            </div>
+
+                            <div className="toggle-box" style={{marginTop: '10px'}}>
+                                <div>
+                                    <span style={{display: 'block'}}>Munculkan Formulir (Modal)?</span>
+                                    <span style={{fontSize: '0.75rem', color: '#94a3b8', fontWeight: 'normal'}}>Member wajib mengisi form alasan sebelum tiket terbuka</span>
+                                </div>
+                                <input type="checkbox" defaultChecked style={{width: '20px', height: '20px'}}/>
+                            </div>
+
                             <label className="input-label" style={{marginTop: '15px'}}>ID Role Admin (Untuk di-Ping)</label>
-                            <input type="text" className="modern-input" placeholder="Masukkan ID Role Discord..." />
+                            <input type="text" className="modern-input" placeholder="Masukkan ID Role Admin/Staff Discord..." />
+                            
                             <button className="btn-action-pro" style={{background: '#6366f1'}}>KIRIM PANEL TIKET KE DISCORD</button>
                         </div>
                     )}
@@ -234,4 +256,4 @@ export default function StareonProDashboard() {
             `}</style>
         </div>
     );
-}
+                                }
