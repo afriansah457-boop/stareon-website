@@ -11,8 +11,16 @@ export const authOptions = {
   ],
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
+    async jwt({ token, account }) {
+      // Menyimpan Access Token saat user login
+      if (account) {
+        token.accessToken = account.access_token;
+      }
+      return token;
+    },
     async session({ session, token }) {
       session.user.id = token.sub;
+      session.accessToken = token.accessToken; // Mengirim token ke halaman web
       return session;
     },
   },
@@ -20,4 +28,3 @@ export const authOptions = {
 
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
-
