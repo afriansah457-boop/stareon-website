@@ -77,7 +77,12 @@ export default function StareonProDashboard() {
                     <div className="server-grid">
                         {guilds.length === 0 && <p style={{color: '#94a3b8'}}>Kamu belum menjadi Admin di server manapun.</p>}
                         {guilds.map(srv => {
+                            // LOGIKA SAKTI: Cek Bot Join (Sementara diset false agar kamu bisa lihat tombol invite untuk ngetes)
+                            // Nanti kalau API bot sudah jalan, variabel ini akan mengecek database otomatis.
+                            const isBotJoined = false; 
+
                             const inviteLink = `https://discord.com/api/oauth2/authorize?client_id=${process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID || '1493195682834681937'}&permissions=8&scope=bot%20applications.commands`;
+                            
                             return (
                                 <div key={srv.id} className="server-card">
                                     <div className="server-icon-box">
@@ -88,8 +93,13 @@ export default function StareonProDashboard() {
                                         <p style={{ margin: 0, fontSize: '0.8rem', color: '#94a3b8' }}>{srv.owner ? '👑 Owner' : '🛡️ Admin'}</p>
                                     </div>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                        {/* Manage sengaja dimunculkan terus untuk kebutuhan test UI dashboard */}
                                         <button onClick={() => setSelectedServer(srv)} className="btn-manage">Manage</button>
-                                        <a href={inviteLink} target="_blank" className="btn-invite"><PlusCircle size={14} style={{marginRight: '5px'}}/> Invite Bot</a>
+                                        
+                                        {/* Invite hanya muncul jika bot belum join */}
+                                        {!isBotJoined && (
+                                            <a href={inviteLink} target="_blank" className="btn-invite"><PlusCircle size={14} style={{marginRight: '5px'}}/> Invite Bot</a>
+                                        )}
                                     </div>
                                 </div>
                             );
@@ -130,12 +140,22 @@ export default function StareonProDashboard() {
 
             <div className="content-area">
                 <div className="glass-card">
-                    {/* MENU 1: WELCOME & GOODBYE */}
+                    {/* MENU 1: WELCOME & GOODBYE (DIPERBARUI) */}
                     {activeTab === 'welcome' && (
                         <div>
                             <h2 className="tab-title"><MessageSquare size={20}/> Welcome & Goodbye</h2>
-                            <label className="input-label">Pesan Welcome</label>
+                            
+                            <label className="input-label">ID Channel Welcome</label>
+                            <input type="text" className="modern-input" placeholder="Masukkan ID Channel... (Misal: 123456789)" />
+                            
+                            <label className="input-label" style={{marginTop: '15px'}}>Pesan Welcome</label>
                             <textarea className="modern-input" rows="2" placeholder="Halo {user}, selamat datang di server!" />
+                            
+                            <hr style={{ borderColor: '#1e293b', margin: '25px 0' }} />
+
+                            <label className="input-label">ID Channel Goodbye</label>
+                            <input type="text" className="modern-input" placeholder="Masukkan ID Channel... (Misal: 123456789)" />
+                            
                             <label className="input-label" style={{marginTop: '15px'}}>Pesan Goodbye</label>
                             <textarea className="modern-input" rows="2" placeholder="Selamat tinggal {user}, sampai jumpa lagi." />
                         </div>
@@ -182,7 +202,7 @@ export default function StareonProDashboard() {
                         </div>
                     )}
 
-                    {/* MENU 5: TICKET SETUP (SUDAH DIROMBAK TOTAL!) */}
+                    {/* MENU 5: TICKET SETUP */}
                     {activeTab === 'ticket' && (
                         <div>
                             <h2 className="tab-title"><Ticket size={20}/> Advanced Ticket System</h2>
@@ -217,7 +237,7 @@ export default function StareonProDashboard() {
                         </div>
                     )}
 
-                    {/* TOMBOL SIMPAN GLOBAL (Hanya muncul di menu pengaturan) */}
+                    {/* TOMBOL SIMPAN GLOBAL */}
                     {(activeTab === 'welcome' || activeTab === 'antilink' || activeTab === 'leveling') && (
                         <button className="btn-save-pro">SIMPAN PENGATURAN</button>
                     )}
@@ -237,23 +257,11 @@ export default function StareonProDashboard() {
                 .glass-card { background: #0f172a; border: 1px solid #1e293b; padding: 25px; border-radius: 20px; max-width: 600px; margin: 0 auto; animation: slideUp 0.3s ease; }
                 .tab-title { margin: 0 0 10px 0; color: #38bdf8; display: flex; align-items: center; gap: 10px; font-size: 1.3rem; }
                 .tab-desc { font-size: 0.85rem; color: #94a3b8; margin-bottom: 20px; }
-                .input-label { font-size: 0.75rem; font-weight: bold; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.5px; }
+                .input-label { font-size: 0.75rem; font-weight: bold; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.5px; display: block; }
                 .modern-input { width: 100%; background: #020617; border: 1px solid #1e293b; padding: 15px; border-radius: 12px; color: white; margin-top: 8px; box-sizing: border-box; font-family: inherit; font-size: 0.9rem; }
                 .modern-input:focus { outline: none; border-color: #38bdf8; }
                 .toggle-box { display: flex; justify-content: space-between; align-items: center; background: #020617; padding: 15px; border-radius: 12px; border: 1px solid #1e293b; font-weight: bold; }
                 
                 .btn-save-pro { width: 100%; background: #38bdf8; color: #020617; border: none; padding: 16px; border-radius: 12px; font-weight: 900; margin-top: 25px; cursor: pointer; transition: 0.2s; }
                 .btn-save-pro:active { transform: scale(0.98); background: #7dd3fc; }
-                .btn-action-pro { width: 100%; color: white; border: none; padding: 16px; border-radius: 12px; font-weight: 900; margin-top: 25px; cursor: pointer; transition: 0.2s; }
-                .btn-action-pro:active { transform: scale(0.98); opacity: 0.8; }
-                
-                @media (min-width: 768px) {
-                    .full-screen { flex-direction: row; }
-                    .sidebar { width: 280px; height: 100vh; border-bottom: none; border-right: 1px solid #1e293b; }
-                    .nav-list { flex-direction: column; }
-                }
-                @keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-            `}</style>
-        </div>
-    );
-                                }
+                .btn-action-pro { width: 100%; color: white; border: none; p
