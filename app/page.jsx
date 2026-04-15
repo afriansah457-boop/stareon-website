@@ -142,4 +142,7 @@ export default function StareonProDashboard() {
             `}</style>
         </div>
     );
+    
 }
+
+  
