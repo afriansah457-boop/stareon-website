@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/response';
+import { NextResponse } from 'next/server';
 import dbConnect from '../../../lib/mongodb';
 import GuildSettings from '../../../lib/models/GuildSettings';
 
@@ -49,4 +49,3 @@ export async function GET(req) {
     return NextResponse.json({ error: 'Gagal mengambil data' }, { status: 500 });
   }
 }
-
