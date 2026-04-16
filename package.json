@@ -1,17 +1,19 @@
 {
   "name": "stareon-dashboard",
   "version": "1.0.0",
+  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
-    "next": "^14.0.0",
+    "lucide-react": "^0.378.0",
+    "mongoose": "^8.3.0",
+    "next": "14.2.35",
+    "next-auth": "^4.24.7",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "mongoose": "^8.0.0",
-    "lucide-react": "^0.292.0",
-    "next-auth": "^4.24.5"
+    "react-dom": "^18.2.0"
   }
 }
