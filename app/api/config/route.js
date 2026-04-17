@@ -1,52 +1,53 @@
 import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
 
-// Sambungan ke Database Stareon kamu
-const mongoURL = 'mongodb+srv://afriansah457_db_user:KpWVmGkZ89suB6gR@cluster0.0fj0mh7.mongodb.net/StareonDB?appName=Cluster0';
+// Sambungkan ke brankas rahasia Vercel
+const MONGODB_URI = process.env.MONGODB_URI;
 
-// Format Data
-const configSchema = new mongoose.Schema({
-    guildId: String,
-    welcomeMsg: String,
-    goodbyeMsg: String,
-    ticketRole: String,
-    antiLink: Boolean,
-    antiSpam: Boolean,
-    leaderboardActive: Boolean,
-    rewardDaily: Number,
-    rewardWeekly: Number
-}, { strict: false });
+// Cetakan laci (harus sama persis dengan bot di Discloud)
+const GuildSettingsSchema = new mongoose.Schema({
+  guildId: { type: String, required: true, unique: true },
+  welcomeChannel: { type: String, default: '' },
+  welcomeMessage: { type: String, default: '' },
+  goodbyeChannel: { type: String, default: '' },
+  goodbyeMessage: { type: String, default: '' },
+  antiLink: { type: Boolean, default: true },
+  maxLevel: { type: Number, default: 100 },
+  rewardRole: { type: String, default: '' },
+  ticketRole: { type: String, default: '' },
+  webAnnounceTrigger: { type: Object, default: null }, 
+  webTicketTrigger: { type: String, default: null } 
+});
 
-// Mencegah error jika schema dipanggil berkali-kali
-const Config = mongoose.models.Config || mongoose.model('Config', configSchema);
+const GuildSettings = mongoose.models.GuildSettings || mongoose.model('GuildSettings', GuildSettingsSchema);
 
-async function connectDB() {
-    if (mongoose.connection.readyState === 0) {
-        await mongoose.connect(mongoURL);
-    }
+// FUNGSI MENGAMBIL DATA (Buat nampilin di web)
+export async function GET(req) {
+  try {
+    await mongoose.connect(MONGODB_URI);
+    // Anggap ID Server Stareon kamu sudah di-set
+    const settings = await GuildSettings.findOne(); 
+    return NextResponse.json({ success: true, data: settings });
+  } catch (error) {
+    return NextResponse.json({ success: false, error: 'Gagal membaca database' }, { status: 500 });
+  }
 }
 
-// Fitur untuk MEMBACA pengaturan
-export async function GET() {
-    await connectDB();
-    let config = await Config.findOne();
-    if (!config) {
-        config = await Config.create({ guildId: 'default' }); // Buat default jika kosong
-    }
-    return NextResponse.json(config);
-}
-
-// Fitur untuk MENYIMPAN pengaturan baru
+// FUNGSI MENYIMPAN DATA (Saat kamu klik tombol Save/Kirim di web)
 export async function POST(req) {
-    await connectDB();
-    const data = await req.json();
-    let config = await Config.findOne();
-    if (!config) {
-        config = new Config(data);
-    } else {
-        Object.assign(config, data);
-    }
-    await config.save();
-    return NextResponse.json({ success: true, config });
-}
+  try {
+    await mongoose.connect(MONGODB_URI);
+    const body = await req.json();
 
+    // Update atau buat pengaturan baru (ganti 'ID_SERVER_KAMU' dengan ID asli server Stareon-mu)
+    const updatedSettings = await GuildSettings.findOneAndUpdate(
+      { guildId: '1466003218839376040' }, // PENTING: Nanti ganti pakai ID Discord Server Stareon
+      { $set: body },
+      { new: true, upsert: true }
+    );
+
+    return NextResponse.json({ success: true, data: updatedSettings });
+  } catch (error) {
+    return NextResponse.json({ success: false, error: 'Gagal menyimpan pengaturan' }, { status: 500 });
+  }
+}
