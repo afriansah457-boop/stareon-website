@@ -13,7 +13,8 @@ export default function StareonProDashboard() {
     const [isSaving, setIsSaving] = useState(false);
     const [settings, setSettings] = useState({
         welcomeChannel: '', welcomeMessage: '', goodbyeChannel: '', goodbyeMessage: '',
-        antiLink: true, xpText: true, xpVoice: true, maxLevel: 100, targetLevel: '', rewardRole: ''
+        antiLink: true, xpText: true, xpVoice: true, maxLevel: 100, targetLevel: '', rewardRole: '',
+        announceChan: '', announceText: '', webTicketTrigger: '', ticketRole: ''
     });
 
     useEffect(() => {
@@ -149,12 +150,14 @@ export default function StareonProDashboard() {
                             <textarea name="goodbyeMessage" value={settings.goodbyeMessage || ''} onChange={handleChange} className="modern-input" rows="2" placeholder="Sampai jumpa {user}." />
                         </div>
                     )}
+                    
                     {activeTab === 'antilink' && (
                         <div>
                             <h2 className="tab-title"><Shield size={20}/> Anti-Link System</h2>
                             <div className="toggle-box"><span>Aktifkan Anti-Link</span><input name="antiLink" checked={settings.antiLink} onChange={handleChange} type="checkbox" style={{width:'20px',height:'20px'}}/></div>
                         </div>
                     )}
+                    
                     {activeTab === 'leveling' && (
                         <div>
                             <h2 className="tab-title"><Zap size={20}/> Leveling (Credix Lite)</h2>
@@ -170,28 +173,90 @@ export default function StareonProDashboard() {
                             <input name="rewardRole" value={settings.rewardRole || ''} onChange={handleChange} type="text" className="modern-input" placeholder="Masukkan ID Role Discord..." />
                         </div>
                     )}
+                    
                     {activeTab === 'announce' && (
                         <div>
                             <h2 className="tab-title"><Megaphone size={20}/> Kirim Announcement</h2>
-                            <label className="input-label">ID Channel Tujuan</label><input type="text" className="modern-input" placeholder="ID Channel Discord..." />
-                            <label className="input-label" style={{marginTop:'15px'}}>Ping Role (Opsional)</label><input type="text" className="modern-input" placeholder="Ketik @everyone atau ID Role..." />
-                            <label className="input-label" style={{marginTop:'15px'}}>Isi Pengumuman</label><textarea className="modern-input" rows="4" placeholder="Ketik di sini..." />
-                            <button onClick={() => alert('Fitur ini akan dikerjakan di Bot')} className="btn-action-pro" style={{background:'#10b981'}}>KIRIM SEKARANG</button>
+                            <label className="input-label">ID Channel Tujuan</label>
+                            <input 
+                                value={settings.announceChan || ''} 
+                                onChange={(e) => setSettings({...settings, announceChan: e.target.value})} 
+                                type="text" className="modern-input" placeholder="ID Channel Discord..." 
+                            />
+                            <label className="input-label" style={{marginTop:'15px'}}>Isi Pengumuman (Gunakan @everyone dsb di sini)</label>
+                            <textarea 
+                                value={settings.announceText || ''} 
+                                onChange={(e) => setSettings({...settings, announceText: e.target.value})} 
+                                className="modern-input" rows="4" placeholder="Ketik di sini..." 
+                            />
+                            <button 
+                                onClick={async () => {
+                                    if (!settings.announceChan || !settings.announceText) return alert('Isi ID Channel dan Pesan!');
+                                    setIsSaving(true);
+                                    await fetch('/api/settings', {
+                                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ 
+                                            guildId: selectedServer.id, 
+                                            webAnnounceTrigger: { channelId: settings.announceChan, message: settings.announceText } 
+                                        })
+                                    });
+                                    setIsSaving(false);
+                                    alert('📢 Pengumuman berhasil dikirim ke server!');
+                                    setSettings({...settings, announceText: ''}); 
+                                }} 
+                                disabled={isSaving}
+                                className="btn-action-pro" style={{background:'#10b981'}}>
+                                {isSaving ? 'MENGIRIM...' : 'KIRIM SEKARANG'}
+                            </button>
                         </div>
                     )}
+                    
                     {activeTab === 'ticket' && (
                         <div>
                             <h2 className="tab-title"><Ticket size={20}/> Advanced Ticket System</h2>
-                            <label className="input-label">ID Channel (Tempat Panel)</label><input type="text" className="modern-input" placeholder="ID Channel..." />
-                            <label className="input-label" style={{marginTop:'15px'}}>Pesan Panel</label><textarea className="modern-input" rows="2" placeholder="Pilih kategori bantuan!" />
-                            <div className="toggle-box" style={{marginTop:'15px'}}><div><span style={{display:'block'}}>Gunakan Dropdown?</span></div><input type="checkbox" defaultChecked style={{width:'20px',height:'20px'}}/></div>
-                            <div className="toggle-box" style={{marginTop:'10px'}}><div><span style={{display:'block'}}>Munculkan Formulir?</span></div><input type="checkbox" defaultChecked style={{width:'20px',height:'20px'}}/></div>
-                            <label className="input-label" style={{marginTop:'15px'}}>ID Role Admin (Auto-Ping)</label><input type="text" className="modern-input" placeholder="ID Role Staff..." />
-                            <button onClick={() => alert('Fitur ini akan dikerjakan di Bot')} className="btn-action-pro" style={{background:'#6366f1'}}>KIRIM PANEL TIKET</button>
+                            <label className="input-label">ID Channel (Tempat Panel)</label>
+                            <input 
+                                value={settings.webTicketTrigger || ''} 
+                                onChange={(e) => setSettings({...settings, webTicketTrigger: e.target.value})} 
+                                type="text" className="modern-input" placeholder="ID Channel..." 
+                            />
+                            <p style={{fontSize: '0.8rem', color: '#94a3b8', marginTop: '10px', lineHeight: '1.4'}}>
+                                *Panel ini otomatis menggunakan Dropdown 3 Kategori dan Formulir (Pop-up) bawaan sistem bot.
+                            </p>
+                            <label className="input-label" style={{marginTop:'15px'}}>ID Role Admin (Auto-Ping di Tiket)</label>
+                            <input 
+                                name="ticketRole"
+                                value={settings.ticketRole || ''} 
+                                onChange={handleChange} 
+                                type="text" className="modern-input" placeholder="Misal: 1466070119380816093" 
+                            />
+                            <button 
+                                onClick={async () => {
+                                    if (!settings.webTicketTrigger) return alert('Isi ID Channel untuk panel tiket!');
+                                    setIsSaving(true);
+                                    await fetch('/api/settings', {
+                                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ 
+                                            guildId: selectedServer.id, 
+                                            webTicketTrigger: settings.webTicketTrigger,
+                                            ticketRole: settings.ticketRole
+                                        })
+                                    });
+                                    setIsSaving(false);
+                                    alert('🎫 Panel Tiket berhasil dimunculkan di server!');
+                                    setSettings({...settings, webTicketTrigger: ''});
+                                }} 
+                                disabled={isSaving}
+                                className="btn-action-pro" style={{background:'#6366f1'}}>
+                                {isSaving ? 'MEMPROSES...' : 'KIRIM PANEL TIKET'}
+                            </button>
                         </div>
                     )}
+
                     {(activeTab === 'welcome' || activeTab === 'antilink' || activeTab === 'leveling') && (
-                        <button onClick={handleSave} disabled={isSaving} className="btn-save-pro">{isSaving ? 'Menyimpan...' : 'SIMPAN PENGATURAN'}</button>
+                        <button onClick={handleSave} disabled={isSaving} className="btn-save-pro">
+                            {isSaving ? 'Menyimpan...' : 'SIMPAN PENGATURAN'}
+                        </button>
                     )}
                 </div>
             </div>
@@ -216,6 +281,7 @@ export default function StareonProDashboard() {
                 .btn-save-pro:disabled{background:#1e293b;color:#94a3b8;cursor:not-allowed;}
                 .btn-action-pro{width:100%;color:white;border:none;padding:16px;border-radius:12px;font-weight:900;margin-top:25px;cursor:pointer;transition:0.2s;}
                 .btn-action-pro:active{transform:scale(0.98);opacity:0.8;}
+                .btn-action-pro:disabled{background:#1e293b !important;color:#94a3b8;cursor:not-allowed;}
                 @media (min-width:768px){.full-screen{flex-direction:row;}.sidebar{width:280px;height:100vh;border-bottom:none;border-right:1px solid #1e293b;}.nav-list{flex-direction:column;}}
                 @keyframes slideUp{from{transform:translateY(10px);opacity:0;}to{transform:translateY(0);opacity:1;}}
             `}</style>
